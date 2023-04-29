@@ -15,9 +15,10 @@ class TikTak {
     Player p2;
     String[][] board;
 
-    TikTak () {
+    TikTak() {
         board = new String[3][3];
     }
+
     public void showBoard() {
         System.out.println("+--------+--------+-------+");
         System.out.println("|        |        |       |");
@@ -56,30 +57,29 @@ class TikTak {
 
     }
 
-    public boolean checkVertical(int start1, int start2, int end1, int end2) { 
+    public boolean checkVertical(int start1, int start2, int end1, int end2) {
         if (board[start1][start2].equals(board[start1 + 1][start2])
-            && board[start1][start2].equals(board[end1][end2])) {
-                return true;
+                && board[start1][start2].equals(board[end1][end2])) {
+            return true;
         }
         return false;
     }
 
-    public boolean checkHorizontal(int start1, int start2, int end1, int end2) { 
+    public boolean checkHorizontal(int start1, int start2, int end1, int end2) {
         if (board[start1][start2].equals(board[start1][start2 + 1])
-            && board[start1][start2].equals(board[end1][end2])) {
-                return true;
+                && board[start1][start2].equals(board[end1][end2])) {
+            return true;
         }
         return false;
     }
 
-    public boolean checkDiagonal(int start1, int start2, int end1, int end2) { 
+    public boolean checkDiagonal(int start1, int start2, int end1, int end2) {
         if (board[start1][start2].equals(board[start1 + 1][start2 + 1])
-            && board[start1][start2].equals(board[end1][end2])) {
-                return true;
+                && board[start1][start2].equals(board[end1][end2])) {
+            return true;
         }
         return false;
     }
-
 
     public void checkStatus(int position) {
         switch (position) {
@@ -89,21 +89,21 @@ class TikTak {
                 boolean res2 = checkDiagonal(0, 0, 2, 2);
                 boolean res3 = checkHorizontal(0, 0, 0, 3);
             case 2:
-                
+
             case 3:
-                
+
             case 4:
-                
+
             case 5:
-                
+
             case 6:
-                
+
             case 7:
-                
+
             case 8:
-                
+
             case 9:
-                
+
         }
     }
 
