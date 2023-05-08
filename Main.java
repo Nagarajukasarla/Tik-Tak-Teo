@@ -1,6 +1,6 @@
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 class Player {
     public String symbol;
@@ -17,9 +17,28 @@ class TikTak {
     String[][] board;
     boolean currentChoice;
     Boolean draw = false;
+    Boolean isGameOn = true;
 
     TikTak() {
         board = new String[3][3];
+    }
+
+    public void updatedBoard() {
+        System.out.println("\n");
+        System.out.println("+--------+--------+-------+");
+        System.out.println("|        |        |       |");
+        System.out.println("|   " + board[0][0] + "    |   " + board[0][1] + "    |   " + board[0][2] + "   |");
+        System.out.println("|        |        |       |");
+        System.out.println("|--------+--------+-------|");
+        System.out.println("|        |        |       |");
+        System.out.println("|   " + board[1][0] + "    |   " + board[1][1] + "    |   " + board[1][2] + "   |");
+        System.out.println("|        |        |       |");
+        System.out.println("|--------+--------+-------|");
+        System.out.println("|        |        |       |");
+        System.out.println("|   " + board[2][0] + "    |   " + board[2][1] + "    |   " + board[2][2] + "   |");
+        System.out.println("|        |        |       |");
+        System.out.println("+--------+--------+-------+");
+
     }
 
     public void showBoard() {
@@ -47,17 +66,15 @@ class TikTak {
         System.out.println("| 2. X   |");
         System.out.println("+--------+\n");
 
-        System.out.print ("Enter your choice: ");
-        Scanner scan = new Scanner(System.in);
-        int playerSymbol = Integer.valueOf(scan.nextLine());
+        System.out.print("Enter your choice: ");
+        int playerSymbol = readInput();
         // TODO --> validate input
         p1 = new Player(playerSymbol == 1 ? "O" : "X");
         p2 = new Player(p1.symbol.equals("O") ? "X" : "O");
-        scan.close();
     }
 
     public boolean checkVertical(int start1, int start2, int end1, int end2) {
-        if (board[start1][start2].equals(board[start1 + 1][start2])
+        if (board[start1][start2] != null && board[start1][start2].equals(board[start1 + 1][start2])
                 && board[start1][start2].equals(board[end1][end2])) {
             return true;
         }
@@ -65,22 +82,23 @@ class TikTak {
     }
 
     public boolean checkHorizontal(int start1, int start2, int end1, int end2) {
-        if (board[start1][start2].equals(board[start1][start2 + 1])
+        if (board[start1][start2] != null && board[start1][start2].equals(board[start1][start2 + 1])
                 && board[start1][start2].equals(board[end1][end2])) {
             return true;
         }
         return false;
     }
 
-    public boolean checkDiagonal1 (int start1, int start2, int end1, int end2) {
-        if (board[start1][start2].equals(board[start1 + 1][start2 + 1])
+    public boolean checkDiagonal1(int start1, int start2, int end1, int end2) {
+        if (board[start1][start2] != null && board[start1][start2].equals(board[start1 + 1][start2 + 1])
                 && board[start1][start2].equals(board[end1][end2])) {
             return true;
         }
         return false;
     }
-    public boolean checkDiagonal2 (int start1, int start2, int end1, int end2) {
-        if (board[start1][start2].equals(board[start1 + 1][start2 - 1])
+
+    public boolean checkDiagonal2(int start1, int start2, int end1, int end2) {
+        if (board[start1][start2] != null && board[start1][start2].equals(board[start1 + 1][start2 - 1])
                 && board[start1][start2].equals(board[end1][end2])) {
             return true;
         }
@@ -112,7 +130,8 @@ class TikTak {
                 }
                 break;
             case 5:
-                if (checkVertical(0, 1, 2, 1) || checkDiagonal1(0, 0, 2, 2) || checkDiagonal2(0, 2, 2, 0) || checkHorizontal(1, 0, 1, 2)) {
+                if (checkVertical(0, 1, 2, 1) || checkDiagonal1(0, 0, 2, 2) || checkDiagonal2(0, 2, 2, 0)
+                        || checkHorizontal(1, 0, 1, 2)) {
                     isWon = true;
                 }
                 break;
@@ -123,12 +142,12 @@ class TikTak {
                 break;
             case 7:
                 if (checkVertical(0, 0, 2, 0) || checkDiagonal2(0, 2, 2, 0) || checkHorizontal(2, 0, 2, 2)) {
-
+                    isWon = true;
                 }
                 break;
             case 8:
                 if (checkVertical(0, 1, 2, 1) || checkHorizontal(2, 0, 2, 2)) {
-
+                    isWon = true;
                 }
                 break;
             case 9:
@@ -140,23 +159,16 @@ class TikTak {
         if (isWon) {
             this.p1.won = player == 1 ? isWon : this.p1.won;
             this.p2.won = player == 2 ? isWon : this.p2.won;
+            isGameOn = false;
         }
     }
 
     public void readPosition(boolean currentChoice) {
         int player = currentChoice ? 1 : 2;
-        Scanner readInput = new Scanner(System.in);
         System.out.println("Player-" + player + " turn !!\n");
-        System.out.print ("Enter you box number: ");
-        int boxPosition = -1;
-        try {
-            boxPosition = Integer.parseInt(readInput.nextLine());
-        }
-        catch (NoSuchElementException e) {
-            readInput.nextLine();
-            readPosition(currentChoice);
-            return;
-        }
+        System.out.print("Enter you box number: ");
+        int boxPosition = readInput();
+
         switch (boxPosition) {
             case 1:
                 this.board[0][0] = this.board[0][0] == null || this.board[0][0].isEmpty()
@@ -213,10 +225,10 @@ class TikTak {
                 checkWinningStatus(boxPosition, player);
 
         }
-        
+
     }
 
-    public void loadGame () {
+    public void loadGame() {
         showBoard();
         userInputForPlayerLogin();
         play();
@@ -224,10 +236,27 @@ class TikTak {
 
     public void play() {
         this.currentChoice = true;
-        while (!(this.p1.won) || !(this.p2.won) || !(this.draw)) {
+        while (isGameOn) {
             readPosition(this.currentChoice);
             this.currentChoice = !this.currentChoice;
+            updatedBoard();
         }
+        int player = this.p1.won ? 1 : 2;
+        System.out.println("Player " + player + " won the match!!!");
+    }
+
+    public int readInput() {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int num = 0;
+        try {
+            String input = br.readLine();
+            num = Integer.parseInt(input);
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid input format: " + e.getMessage());
+        }
+        return num;
     }
 }
 
