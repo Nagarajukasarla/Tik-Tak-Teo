@@ -5,7 +5,7 @@ public class GameEngine {
     Player p2;
     Boolean currentChoice = true; // True means player one
     Boolean isGameOn = true;
-    int choice = 0;
+    boolean[] isCleared;
 
     public boolean checkVertical(int start1, int start2, int end1, int end2, String[][] board) {
         if (board[start1][start2] != null && board[start1][start2].equals(board[start1 + 1][start2])
@@ -108,9 +108,6 @@ public class GameEngine {
             player.won = true;
             isGameOn = false;
         }
-        if (choice == 9) {
-            isGameOn = false;
-        }
         return isGameOn;
     }
 
@@ -122,59 +119,78 @@ public class GameEngine {
                         ? player.symbol
                         : board[0][0];
                 checkWinningStatus(boxPosition, player, board);
+                isCleared[0] = true;
                 break;
             case 2:
                 board[0][1] = board[0][1] == null || board[0][1].isEmpty()
                         ? player.symbol
                         : board[0][1];
                 checkWinningStatus(boxPosition, player, board);
+                isCleared[1] = true;
                 break;
             case 3:
                 board[0][2] = board[0][2] == null || board[0][2].isEmpty()
                         ? player.symbol
                         : board[0][2];
                 checkWinningStatus(boxPosition, player, board);
+                isCleared[2] = true;
                 break;
             case 4:
                 board[1][0] = board[1][0] == null || board[1][0].isEmpty()
                         ? player.symbol
                         : board[1][0];
                 checkWinningStatus(boxPosition, player, board);
+                isCleared[3] = true;
                 break;
             case 5:
                 board[1][1] = board[1][1] == null || board[1][1].isEmpty()
                         ? player.symbol
                         : board[1][1];
                 checkWinningStatus(boxPosition, player, board);
+                isCleared[4] = true;
                 break;
             case 6:
                 board[1][2] = board[1][2] == null || board[1][2].isEmpty()
                         ? player.symbol
                         : board[1][2];
                 checkWinningStatus(boxPosition, player, board);
+                isCleared[5] = true;
                 break;
             case 7:
                 board[2][0] = board[2][0] == null || board[2][0].isEmpty()
                         ? player.symbol
                         : board[2][0];
                 checkWinningStatus(boxPosition, player, board);
+                isCleared[6] = true;
                 break;
             case 8:
                 board[2][1] = board[2][1] == null || board[2][1].isEmpty()
                         ? player.symbol
                         : board[2][1];
                 checkWinningStatus(boxPosition, player, board);
+                isCleared[7] = true;
                 break;
             case 9:
                 board[2][2] = board[2][2] == null || board[2][2].isEmpty()
                         ? player.symbol
                         : board[2][2];
                 checkWinningStatus(boxPosition, player, board);
+                isCleared[8] = true;
         }
-        choice++;
+    }
+
+    public boolean checkAllCovered () {
+        int count = 0;
+        for (int i = 0; i < 9; i++) {
+            if (isCleared[i]) {
+                count++;
+            }
+        }
+        return count == 9 ? false : true;
     }
 
     public void start() {
+        isCleared = new boolean[9];
         Board board = new Board();
         board.showBoard();
         String[][] myBoard = board.board;
@@ -187,6 +203,7 @@ public class GameEngine {
             setPosition(myBoard, read.readPosition(this.currentChoice, players));
             System.out.println();
             board.updatedBoard(myBoard);
+            isGameOn = isGameOn ? checkAllCovered() : false;
             this.currentChoice = !(this.currentChoice);
         }
         if (p1.won) {
@@ -198,6 +215,10 @@ public class GameEngine {
             System.out.println("Player 2 has won the match");
             System.out.println("Player 1 better luck next time");
             return;
+        }
+        else {
+            System.out.println();
+            System.out.println("Game Draw,  both of you are too smart !");
         }
     }
 }
